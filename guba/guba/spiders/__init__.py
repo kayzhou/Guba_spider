@@ -20,7 +20,7 @@ class GubaSpider(scrapy.Spider):
         stock_ids = self.get_stock_ids()
 
         for i, stock_id in enumerate(stock_ids):
-            for page in range(2, 5000):
+            for page in range(2, 2000):
                 print(i, 'stock ->', stock_id, 'page ->', page)
                 url = 'http://guba.eastmoney.com/list,{}_{}.html'.format(stock_id, page)
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True, meta={'stock_id': stock_id})
