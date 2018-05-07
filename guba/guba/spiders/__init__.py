@@ -37,8 +37,8 @@ class GubaSpider(scrapy.Spider):
                 title = l3.xpath('@title').extract_first()
                 url = 'http://guba.eastmoney.com' + str(l3.xpath('@href').extract_first())
                 author = li_info[3].xpath('a/text()').extract_first()
-                dt_publish = li_info[4].xpath('text()').extract_first()
-                dt_update = li_info[5].xpath('text()').extract_first()
+                # dt_publish = li_info[4].xpath('text()').extract_first()
+                # dt_update = li_info[5].xpath('text()').extract_first()
                 if title:
                     # yield {
                     #     'read_count': read_count,
@@ -62,18 +62,18 @@ class GubaSpider(scrapy.Spider):
     def parse_content(self, response):
         item = response.meta
         main = response.css('html body.hlbody div.gbbody div#mainbody div#zwcontent')
-        
         info_publish = main.css('div#zwcontt div#zwconttb div.zwfbtime::text').extract_first()
         list_info = info_publish.split(' ')
         dt_publish = list_info[1] + ' ' + list_info[2]
         source = list_info[3]
-        
-        content = main.css('div.zwcontentmain div#zwconbody div.stockcodec').xpath('string(.)').extract_first().strip()
-        # title = main.css('div.zwcontentmain div#zwconttbt::text').extract_first().strip()
+        try:
+            content = main.css('div.zwcontentmain div#zwconbody div.stockcodec').xpath('string(.)').extract_first().strip()
+            item['content'] = content
+        except:
+            print('缺少内容。')
 
         item['dt_publish'] = dt_publish
         item['source'] = source
-        item['content'] = content
         yield item
 
     def file_path(self, request, response=None, info=None):
