@@ -103,3 +103,4 @@ ENV/
 *.json
 data/
 .DS_Store
+follow.txt
