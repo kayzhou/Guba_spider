@@ -10,6 +10,7 @@ class UserSpider(scrapy.Spider):
     name = 'user'
     start_urls = ['http://iguba.eastmoney.com/2381134614145238/tafollow']
 
+
     def parse(self, response):
         followers_str = response.xpath('/html/body/script[2]/text()').extract_first()
         start_index = followers_str.find('{')
@@ -17,7 +18,7 @@ class UserSpider(scrapy.Spider):
         data = json.loads(followers_str[start_index: end_index])
         res = data['re']
         count = data['count']
-        
+
         print(count, len(res))
 
         for u in res:
@@ -51,7 +52,7 @@ class UserSpider(scrapy.Spider):
         print('用户池大小', len(user_pool))
         item['following_list'] = [u['user_id'] for u in res]
 
-        with open('data/follow.txt', 'a') as f:
+        with open('follow.txt', 'a') as f:
             f.write(json.dumps(dict(item), ensure_ascii=False) + '\n')
 
         for u in res:
