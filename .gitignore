@@ -102,4 +102,4 @@ ENV/
 
 *.json
 data/
-guba/.DS_Store
+.DS_Store

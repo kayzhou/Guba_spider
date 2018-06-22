@@ -14,6 +14,9 @@ class GubaSpider(scrapy.Spider):
     def get_stock_ids(self):
         print(os.getcwd())
         stock_ids = [line.strip().split(',')[0] for line in open('guba/_id.txt')]
+        stock_ids.reverse()
+        _index = stock_ids.index('300187')
+        stock_ids = stock_ids[_index:]
         return stock_ids
 
     def start_requests(self):

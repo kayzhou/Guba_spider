@@ -19,7 +19,11 @@ class GubaPipeline(object):
         return item
 
     def file_path(self, item):
+<<<<<<< HEAD
+        path = "data/{}.txt" .format(item['stock_id'])
+=======
         path = "{}.txt".format(item['stock_id'])
+>>>>>>> 6deb1678b47b469430238fd3f7cc3374c4b58d4d
         return path
 
 
