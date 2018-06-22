@@ -19,5 +19,24 @@ class GubaPipeline(object):
         return item
 
     def file_path(self, item):
+<<<<<<< HEAD
         path = "data/{}.txt" .format(item['stock_id'])
+=======
+        path = "{}.txt".format(item['stock_id'])
+>>>>>>> 6deb1678b47b469430238fd3f7cc3374c4b58d4d
+        return path
+
+
+class UserPipeline(object):
+    def __init__(self):
+        author = 'Kay Zhou'
+
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item), ensure_ascii=False) + '\n'
+        out_file = open(self.file_path(item), 'a')
+        out_file.write(line)
+        return item
+
+    def file_path(self, item):
+        path = "data/follow/{}.txt"
         return path
