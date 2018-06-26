@@ -3,12 +3,14 @@ import scrapy
 import json
 from ..items import UserItem
 
+processed_count = 0
 user_pool = set([])
 
 
 class UserSpider(scrapy.Spider):
     name = 'user'
     start_urls = ['http://iguba.eastmoney.com/2381134614145238/tafollow']
+    # start_urls = ['http://iguba.eastmoney.com/7817114851843268/tafollow']
 
 
     def parse(self, response):
@@ -19,7 +21,7 @@ class UserSpider(scrapy.Spider):
         res = data['re']
         count = data['count']
 
-        print(count, len(res))
+        # print(count, len(res))
 
         for u in res:
             if u['user_id'] in user_pool:
@@ -42,6 +44,7 @@ class UserSpider(scrapy.Spider):
 
 
     def parse_follow(self, response):
+        global processed_count
         item = response.meta
         followers_str = response.xpath('/html/body/script[2]/text()').extract_first()
         start_index = followers_str.find('{')
@@ -49,11 +52,14 @@ class UserSpider(scrapy.Spider):
         data = json.loads(followers_str[start_index: end_index])
         res = data['re']
         count = data['count']
-        print('用户池大小', len(user_pool))
+        print('当前用户获取粉丝数：', len(res))
+        print('用户池大小：', len(user_pool))
         item['following_list'] = [u['user_id'] for u in res]
 
-        with open('follow.txt', 'a') as f:
+        with open('follow-2.txt', 'a') as f:
             f.write(json.dumps(dict(item), ensure_ascii=False) + '\n')
+            processed_count += 1
+            print('已经处理：', processed_count)
 
         for u in res:
             if u['user_id'] in user_pool:
@@ -72,4 +78,4 @@ class UserSpider(scrapy.Spider):
             follow_item['level'] = u['user_level']
             url = 'http://iguba.eastmoney.com/' + u['user_id']
             next_url = url + '/tafollow'
-            yield response.follow(next_url, callback=self.parse, meta=follow_item)
+            yield response.follow(next_url, callback=self.parse_follow, meta=follow_item)
