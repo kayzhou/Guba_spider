@@ -9,8 +9,8 @@ user_pool = set([])
 
 class UserSpider(scrapy.Spider):
     name = 'user'
-    start_urls = ['http://iguba.eastmoney.com/2381134614145238/tafollow']
-    # start_urls = ['http://iguba.eastmoney.com/7817114851843268/tafollow']
+    # start_urls = ['http://iguba.eastmoney.com/2381134614145238/tafollow']
+    start_urls = ['http://iguba.eastmoney.com/7817114851843268/tafollow']
 
 
     def parse(self, response):
@@ -56,7 +56,7 @@ class UserSpider(scrapy.Spider):
         print('用户池大小：', len(user_pool))
         item['following_list'] = [u['user_id'] for u in res]
 
-        with open('follow-2.txt', 'a') as f:
+        with open('follow-1.txt', 'a') as f:
             f.write(json.dumps(dict(item), ensure_ascii=False) + '\n')
             processed_count += 1
             print('已经处理：', processed_count)
