@@ -3,8 +3,11 @@ import scrapy
 import json
 from ..items import UserItem
 
-processed_count = 0
-user_pool = set([])
+
+# user_pool = set([])
+user_pool = set([json.loads(line.strip())['user_id'] for line in open('follow-2.txt')])
+processed_count = len(user_pool)
+
 
 
 class UserSpider(scrapy.Spider):
@@ -12,15 +15,13 @@ class UserSpider(scrapy.Spider):
     # start_urls = ['http://iguba.eastmoney.com/2381134614145238/tafollow']
     start_urls = ['http://iguba.eastmoney.com/7817114851843268/tafollow']
 
-
     def parse(self, response):
         followers_str = response.xpath('/html/body/script[2]/text()').extract_first()
         start_index = followers_str.find('{')
         end_index = followers_str.find(';\r\n\t\t$')
         data = json.loads(followers_str[start_index: end_index])
         res = data['re']
-        count = data['count']
-
+        # count = data['count']
         # print(count, len(res))
 
         for u in res:
@@ -51,7 +52,7 @@ class UserSpider(scrapy.Spider):
         end_index = followers_str.find(';\r\n\t\t$')
         data = json.loads(followers_str[start_index: end_index])
         res = data['re']
-        count = data['count']
+        # count = data['count']
         print('当前用户获取粉丝数：', len(res))
         print('用户池大小：', len(user_pool))
         item['following_list'] = [u['user_id'] for u in res]
