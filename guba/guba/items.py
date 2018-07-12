@@ -21,6 +21,8 @@ class GubaItem(scrapy.Item):
     author = scrapy.Field()
     _id = scrapy.Field()
     stock_id = scrapy.Field()
+    uid = scrapy.Field()
+    user_url = scrapy.Field()
 
 
 class UserItem(scrapy.Item):
@@ -30,7 +32,7 @@ class UserItem(scrapy.Item):
     name = scrapy.Field()
     stock_count = scrapy.Field()
     following_count = scrapy.Field()
-    following_list = scrapy.Field() 
+    following_list = scrapy.Field()
     follower_count = scrapy.Field()
     follower_list = scrapy.Field()
     guba_age = scrapy.Field()
