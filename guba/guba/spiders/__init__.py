@@ -6,7 +6,7 @@
 import os
 import scrapy
 from ..items import GubaItem
-import tqdm
+from tqdm import tqdm
 
 
 class GubaSpider(scrapy.Spider):

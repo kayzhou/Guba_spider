@@ -4,16 +4,13 @@ import json
 from ..items import UserItem
 
 
-# user_pool = set([])
 user_pool = set([json.loads(line.strip())['user_id'] for line in open('follow-2.txt')])
 processed_count = len(user_pool)
-
 
 
 class UserSpider(scrapy.Spider):
     name = 'user'
     start_urls = ['http://iguba.eastmoney.com/2381134614145238/tafollow']
-    # start_urls = ['http://iguba.eastmoney.com/7817114851843268/tafollow']
 
     def parse(self, response):
         followers_str = response.xpath('/html/body/script[2]/text()').extract_first()
