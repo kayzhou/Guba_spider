@@ -19,7 +19,7 @@ class GubaItem(scrapy.Item):
     comment_count = scrapy.Field()
     title = scrapy.Field()
     author = scrapy.Field()
-    _id = scrapy.Field()
+    # _id = scrapy.Field()
     stock_id = scrapy.Field()
     uid = scrapy.Field()
     user_url = scrapy.Field()

@@ -46,8 +46,7 @@ class GubaSpider(scrapy.Spider):
                     item['title'] = title
                     item['url'] = url
                     item['author'] = author
-                    item['uid'] = uid
-                    item['_id'] = str(l3.xpath('@href').extract_first())[1:-5]
+                    # item['_id'] = str(l3.xpath('@href').extract_first())[1:-5]
                     yield response.follow(url, callback=self.parse_content, meta=item)
 
     def parse_content(self, response):
