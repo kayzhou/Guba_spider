@@ -6,6 +6,7 @@
 import os
 import scrapy
 from ..items import GubaItem
+import tqdm
 
 
 class GubaSpider(scrapy.Spider):
@@ -14,22 +15,19 @@ class GubaSpider(scrapy.Spider):
     def get_stock_ids(self):
         print(os.getcwd())
         stock_ids = [line.strip().split(',')[0] for line in open('guba/_id.txt')]
-        stock_ids.reverse()
-        _index = stock_ids.index('300187')
-        stock_ids = stock_ids[_index:]
+        stock_ids[:1800]
         return stock_ids
 
     def start_requests(self):
         stock_ids = self.get_stock_ids()
 
-        for i, stock_id in enumerate(stock_ids):
+        for stock_id in tqdm(stock_ids):
             for page in range(2, 2000):
-                print(i, 'stock ->', stock_id, 'page ->', page)
+                print('stock ->', stock_id, 'page ->', page)
                 url = 'http://guba.eastmoney.com/list,{}_{}.html'.format(stock_id, page)
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True, meta={'stock_id': stock_id})
 
     def parse(self, response):
-
         for item in response.xpath('/html/body/div[6]/div[2]/div[3]/div'):
             li_info = item.xpath('span')
 
@@ -40,18 +38,7 @@ class GubaSpider(scrapy.Spider):
                 title = l3.xpath('@title').extract_first()
                 url = 'http://guba.eastmoney.com' + str(l3.xpath('@href').extract_first())
                 author = li_info[3].xpath('a/text()').extract_first()
-                # dt_publish = li_info[4].xpath('text()').extract_first()
-                # dt_update = li_info[5].xpath('text()').extract_first()
                 if title:
-                    # yield {
-                    #     'read_count': read_count,
-                    #     'comment_count': comment_count,
-                    #     'title': title,
-                    #     'url': url,
-                    #     'author': author,
-                    #     # 'dt_publish': dt_publish,
-                    #     # 'dt_update': dt_update
-                    # }
                     item = GubaItem()
                     item['stock_id'] = response.meta['stock_id']
                     item['read_count'] = read_count
@@ -59,6 +46,7 @@ class GubaSpider(scrapy.Spider):
                     item['title'] = title
                     item['url'] = url
                     item['author'] = author
+                    item['uid'] = uid
                     item['_id'] = str(l3.xpath('@href').extract_first())[1:-5]
                     yield response.follow(url, callback=self.parse_content, meta=item)
 
@@ -69,6 +57,8 @@ class GubaSpider(scrapy.Spider):
         list_info = info_publish.split(' ')
         dt_publish = list_info[1] + ' ' + list_info[2]
         source = list_info[3]
+        user_url = response.css('#zwconttbn strong a::attr(href)').extract_first()
+        uid = user_url.split('/')[-1]
         try:
             content = main.css('div.zwcontentmain div#zwconbody div.stockcodec').xpath('string(.)').extract_first().strip()
             item['content'] = content
@@ -77,6 +67,8 @@ class GubaSpider(scrapy.Spider):
 
         item['dt_publish'] = dt_publish
         item['source'] = source
+        item['user_url'] = user_url
+        item['uid'] = uid
         yield item
 
     def file_path(self, request, response=None, info=None):
