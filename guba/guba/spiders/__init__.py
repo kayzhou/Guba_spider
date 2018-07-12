@@ -15,15 +15,15 @@ class GubaSpider(scrapy.Spider):
     def get_stock_ids(self):
         print(os.getcwd())
         stock_ids = [line.strip().split(',')[0] for line in open('guba/_id.txt')]
-        stock_ids = stock_ids[1:1800]
+        stock_ids = stock_ids[:1800]
         return stock_ids
 
     def start_requests(self):
         stock_ids = self.get_stock_ids()
 
         for stock_id in tqdm(stock_ids):
+            print('stock ->', stock_id)
             for page in range(2, 2000):
-                print('stock ->', stock_id, 'page ->', page)
                 url = 'http://guba.eastmoney.com/list,{}_{}.html'.format(stock_id, page)
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True, meta={'stock_id': stock_id})
 
@@ -53,22 +53,31 @@ class GubaSpider(scrapy.Spider):
         item = response.meta
         main = response.css('html body.hlbody div.gbbody div#mainbody div#zwcontent')
         info_publish = main.css('div#zwcontt div#zwconttb div.zwfbtime::text').extract_first()
-        list_info = info_publish.split(' ')
-        dt_publish = list_info[1] + ' ' + list_info[2]
-        source = list_info[3]
         user_url = response.css('#zwconttbn strong a::attr(href)').extract_first()
-        uid = user_url.split('/')[-1]
+        item['user_url'] = user_url
+
+        try:
+            list_info = info_publish.split(' ')
+            dt_publish = list_info[1] + ' ' + list_info[2]
+            source = list_info[3]
+            item['dt_publish'] = dt_publish
+            item['source'] = source
+        except:
+            print('无法获取。', item['url'])
+
+        try:
+            uid = user_url.split('/')[-1]
+            item['uid'] = uid
+        except:
+            # print('用户URL无法获取。', item['url'])
+            item['uid'] = '-1'
+
         try:
             content = main.css('div.zwcontentmain div#zwconbody div.stockcodec').xpath('string(.)').extract_first().strip()
             item['content'] = content
         except:
-            print('缺少内容。')
-
-        item['dt_publish'] = dt_publish
-        item['source'] = source
-        item['user_url'] = user_url
-        item['uid'] = uid
-        yield item
+            # print('缺少内容。', item['url'])
+            item['content'] = '(-1)内容缺失。'
 
     def file_path(self, request, response=None, info=None):
         item = request.meta['item']
