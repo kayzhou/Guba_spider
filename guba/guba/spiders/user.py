@@ -4,8 +4,10 @@ import json
 from ..items import UserItem
 
 
-user_pool = set([json.loads(line.strip())['user_id'] for line in open('follow-2.txt')])
-processed_count = len(user_pool)
+def get_user_pool():
+    user_pool = set([json.loads(line.strip())['user_id'] for line in open('follow-2.txt')])
+    processed_count = len(user_pool)
+    return user_pool
 
 
 class UserSpider(scrapy.Spider):
