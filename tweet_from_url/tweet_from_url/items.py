@@ -18,7 +18,7 @@ class TweetFromUrlItem(scrapy.Item):
     read_count = scrapy.Field()
     comment_count = scrapy.Field()
     title = scrapy.Field()
-    author = scrapy.Field()
+    user_name = scrapy.Field()
     stock_id = scrapy.Field()
     uid = scrapy.Field()
     user_url = scrapy.Field()
