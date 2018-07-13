@@ -42,3 +42,4 @@ class TweetSpider(scrapy.Spider):
         except:
             pass
         tweet = TweetFromUrlItem(item)
+        
