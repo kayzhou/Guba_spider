@@ -41,5 +41,5 @@ class TweetSpider(scrapy.Spider):
             del item['redirect_urls']
         except:
             pass
+        print('是否可以自动处理呢？')
         tweet = TweetFromUrlItem(item)
-        
