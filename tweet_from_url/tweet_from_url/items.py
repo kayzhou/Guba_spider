@@ -11,4 +11,14 @@ import scrapy
 class TweetFromUrlItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    url = scrapy.Field()
+    dt_publish = scrapy.Field()
+    source = scrapy.Field()
+    content = scrapy.Field()
+    read_count = scrapy.Field()
+    comment_count = scrapy.Field()
+    title = scrapy.Field()
+    author = scrapy.Field()
+    stock_id = scrapy.Field()
+    uid = scrapy.Field()
+    user_url = scrapy.Field()
