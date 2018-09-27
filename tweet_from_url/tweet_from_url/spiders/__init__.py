@@ -14,7 +14,7 @@ class TweetSpider(scrapy.Spider):
     name = "tweet_from_url"
 
     def start_requests(self):
-        in_dir = "/home/kayzhou/Project/Guba_analysis/data/origin/tweet"
+        in_dir = "/home/kayzhou/Project/Guba_analysis/data/origin/others"
         for in_name in tqdm(os.listdir(in_dir)):
             for line in open(os.path.join(in_dir, in_name)):
                 d = json.loads(line.strip())
@@ -28,7 +28,7 @@ class TweetSpider(scrapy.Spider):
             'url': d['url'],
             'dt_publish': d['dt_publish'],
             'source': d['source'],
-            'content': d['content'],
+            # 'content': d['content'],
             'read_count': d['read_count'],
             'comment_count': d['comment_count'],
             'title': d['title'],

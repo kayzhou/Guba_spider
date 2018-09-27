@@ -20,5 +20,5 @@ class TweetFromUrlPipeline(object):
         return item
 
     def file_path(self, item):
-        path = "/home/kayzhou/Project/Guba_spider/data/tweet/{}.txt".format(item['stock_id'])
+        path = "/home/kayzhou/Project/Guba_spider/data/others/{}.txt".format(item['stock_id'])
         return path
